@@ -3,6 +3,7 @@
 // SPDX-FileContributor: Antonio Niño Díaz, 2022
 
 #include <stdint.h>
+#include <string.h>
 
 #define GBA_SCREEN_W            240
 #define GBA_SCREEN_H            160
@@ -25,9 +26,24 @@ int main(int argc, char *argv[])
 {
     REG_DISPCNT = DISPCNT_BG_MODE(3) | DISPCNT_BG2_ENABLE;
 
-    MEM_VRAM_MODE3_FB[120 + 80 * GBA_SCREEN_W] = RGB15(31, 0, 0);
+    uint16_t mod = 0;
+
+    while(1)
+    {
+        for (uint16_t y = 0; y < GBA_SCREEN_H; y++)
+        {
+            for (uint16_t x = 0; x < GBA_SCREEN_W; x++)
+            {
+                MEM_VRAM_MODE3_FB[x + (y * GBA_SCREEN_W)] = RGB15((mod+x) % 32, (mod+y) % 32, (mod+x+y) % 32);
+            }
+        }
+
+        mod = (mod + 1) % (GBA_SCREEN_W+1);
+    }
+
+    /*MEM_VRAM_MODE3_FB[120 + 80 * GBA_SCREEN_W] = RGB15(31, 0, 0);
     MEM_VRAM_MODE3_FB[136 + 80 * GBA_SCREEN_W] = RGB15(0, 31, 0);
-    MEM_VRAM_MODE3_FB[120 + 96 * GBA_SCREEN_W] = RGB15(0, 0, 31);
+    MEM_VRAM_MODE3_FB[120 + 96 * GBA_SCREEN_W] = RGB15(0, 0, 31);*/
 
     while(1);
 
