@@ -54,10 +54,10 @@ BUILDDIR	:= build
 # Build artfacts
 # --------------
 
-ELF		:= $(NAME).elf
-DUMP		:= $(NAME).dump
-ROM		:= $(NAME).gba
-MAP		:= $(NAME).map
+ELF		:= $(BUILDDIR)/$(NAME).elf
+DUMP		:= $(BUILDDIR)/$(NAME).dump
+ROM		:= $(BUILDDIR)/$(NAME).gba
+MAP		:= $(BUILDDIR)/$(NAME).map
 
 GBAFIX		:= gbafix/gbafix
 
