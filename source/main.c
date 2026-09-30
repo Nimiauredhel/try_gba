@@ -69,7 +69,6 @@ static inline void gfx_draw(void)
 	group++;
 	if (group > 1) group = 0;
 
-	while(is_vblank());
 	while(is_vdraw());
 
 	if (group == 0)
@@ -79,10 +78,10 @@ static inline void gfx_draw(void)
 
         for (int32_t y = 0; y < size_y; y+=2)
         {
+	    uint16_t g = y;
             for (int32_t x = 0; x < size_x; x+=2)
             {
-		uint16_t r = x % 32;
-		uint16_t g = y % 32;
+		uint16_t r = x;
 		uint16_t b = (x+y) % 32;
 
 		switch(group)
@@ -100,6 +99,8 @@ static inline void gfx_draw(void)
 		}
             }
         }
+
+	while(is_vblank());
 
 	/*MEM_VRAM_MODE3_FB[120 + 80 * GBA_SCREEN_W] = RGB15(31, 0, 0);
 	MEM_VRAM_MODE3_FB[136 + 80 * GBA_SCREEN_W] = RGB15(0, 31, 0);
