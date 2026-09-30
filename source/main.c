@@ -46,7 +46,20 @@ static inline int is_vblank(void)
 	return(REG_VCOUNT < 160);
 }
 
-static inline void draw(void)
+static inline void gfx_clear(void)
+{
+	const uint16_t black = RGB15(0,0,0);
+
+	for (int32_t y = 0; y < GBA_SCREEN_H; y++)
+	{
+	    for (int32_t x = 0; x < GBA_SCREEN_W; x++)
+	    {
+		MEM_VRAM_MODE3_FB[x + (y * GBA_SCREEN_W)] = black;
+	    } 
+	}
+}
+
+static inline void gfx_draw(void)
 {
 	const uint16_t mod_w = GBA_SCREEN_W + 1;
 	const uint16_t mod_h = GBA_SCREEN_H + 1;
@@ -56,15 +69,12 @@ static inline void draw(void)
 	group++;
 	if (group > 1) group = 0;
 
+	while(is_vblank());
+	while(is_vdraw());
+
 	if (group == 0)
 	{
-		for (int32_t y = 0; y < GBA_SCREEN_H; y++)
-		{
-		    for (int32_t x = 0; x < GBA_SCREEN_W; x++)
-		    {
-			MEM_VRAM_MODE3_FB[x + (y * GBA_SCREEN_W)] = RGB15(0,0,0);
-		    } 
-		}
+		gfx_clear();
 	}
 
         for (int32_t y = 0; y < size_y; y+=2)
@@ -116,9 +126,7 @@ static inline void loop(void)
 		if (mod_y3 < 0) mod_y3 = GBA_SCREEN_H;
 		if (mod_x4 < 0) mod_x4 = GBA_SCREEN_W;
 		if (mod_y4 < 0) mod_y4 = GBA_SCREEN_H;
-		draw();
-		while(is_vblank());
-		while(is_vdraw());
+		gfx_draw();
 	}
 }
 
