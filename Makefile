@@ -8,8 +8,8 @@
 # ROM config
 # ----------
 
-NAME		:= first
-GAME_TITLE	:= "FIRST"
+NAME		:= try
+GAME_TITLE	:= "Try GBA!"
 GAME_CODE	:= "00"
 
 # Defines passed to all files
@@ -38,6 +38,7 @@ OBJDUMP		:= $(PREFIX)objdump
 OBJCOPY		:= $(PREFIX)objcopy
 MKDIR		:= mkdir
 RM		:= rm -rf
+RUNCMD		:= mgba-qt
 
 # Verbose flag
 # ------------
@@ -132,9 +133,12 @@ $(BUILDDIR)/%.cpp.o : $(SOURCEDIR)/%.cpp
 # Targets
 # -------
 
-.PHONY: all clean dump
+.PHONY: all clean dump run
 
 all: $(ROM)
+
+run: $(ROM)
+	$(RUNCMD) $(ROM)
 
 $(GBAFIX):
 	$(V)cd gbafix && make
