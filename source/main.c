@@ -19,6 +19,18 @@
 
 #define REG_VCOUNT             *((volatile uint16_t *)0x04000006)
 
+#define REG_P1                 *((volatile uint16_t *)0x04000130)
+#define KEY_A (0x1 << 0)
+#define KEY_B (0x1 << 1)
+#define KEY_SELECT (0x1 << 2)
+#define KEY_START (0x1 << 3)
+#define KEY_RIGHT (0x1 << 4)
+#define KEY_LEFT (0x1 << 5)
+#define KEY_UP (0x1 << 6)
+#define KEY_DOWN (0x1 << 7)
+#define KEY_R (0x1 << 8)
+#define KEY_L (0x1 << 9)
+
 const int32_t size_x = 32;
 const int32_t size_y = 32;
 
@@ -34,6 +46,11 @@ int32_t mod_y4 = GBA_SCREEN_H;
 static inline uint16_t RGB15(uint16_t r, uint16_t g, uint16_t b)
 {
     return (r & 0x1F) | ((g & 0x1F) << 5) | ((b & 0x1F) << 10);
+}
+
+static inline int is_key_down(int key)
+{
+	return(key & (~REG_P1));
 }
 
 static inline int is_vdraw(void)
@@ -111,8 +128,10 @@ static inline void loop(void)
 {
 	while(1)
 	{
-		mod_x += 1;
-		mod_y +=2;
+		if (is_key_down(KEY_RIGHT)) mod_x += 1;
+		if (is_key_down(KEY_LEFT)) mod_x -= 1;
+		if (is_key_down(KEY_DOWN)) mod_y += 1;
+		if (is_key_down(KEY_UP)) mod_y -= 1;
 		mod_x2 += 2;
 		mod_y2 += 1;
 		mod_x3 -= 1;
@@ -121,6 +140,8 @@ static inline void loop(void)
 		mod_y4 -= 2;
 		if (mod_x > GBA_SCREEN_W) mod_x = 0;
 		if (mod_y > GBA_SCREEN_H) mod_y = 0;
+		if (mod_x < 0) mod_x = GBA_SCREEN_W;
+		if (mod_y < 0) mod_y = GBA_SCREEN_H;
 		if (mod_x2 > GBA_SCREEN_W) mod_x2 = 0;
 		if (mod_y2 > GBA_SCREEN_H) mod_y2 = 0;
 		if (mod_x3 < 0) mod_x3 = GBA_SCREEN_W;
